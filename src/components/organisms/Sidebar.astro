@@ -1,0 +1,93 @@
+---
+import { getPublishedProjects, getPublishedPosts } from "@/lib/content";
+import { siteConfig } from "@/lib/site.config";
+import { Github, Mail } from "lucide-react";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const projects = await getPublishedProjects();
+const recentPosts = (await getPublishedPosts()).slice(0, 5);
+---
+
+<aside class="text-sm">
+  <div class="space-y-1">
+    <a
+      href={base + "/"}
+      class="font-semibold tracking-tight text-base block"
+    >
+      {siteConfig.name}
+    </a>
+    <p class="text-xs text-muted-foreground">기록과 만든 것들.</p>
+  </div>
+
+  <nav class="mt-8 space-y-1">
+    <p class="text-xs uppercase tracking-wider text-muted-foreground mb-2">Blog</p>
+    <a href={base + "/"} class="block py-1 hover:text-foreground text-muted-foreground transition-colors">
+      전체 글
+    </a>
+    {recentPosts.length === 0 && (
+      <p class="text-xs text-muted-foreground italic py-1">아직 글이 없습니다.</p>
+    )}
+    {
+      recentPosts.map((post) => (
+        <a
+          href={`${base}/blog/${post.id}`}
+          class="block py-1 hover:text-foreground text-muted-foreground transition-colors truncate"
+        >
+          {post.data.title}
+        </a>
+      ))
+    }
+  </nav>
+
+  <div class="my-6 h-px bg-border"></div>
+
+  <div>
+    <a
+      href={base + "/portfolio"}
+      class="text-xs uppercase tracking-wider text-muted-foreground mb-2 inline-flex items-center gap-1 hover:text-foreground transition-colors"
+    >
+      Portfolio <span aria-hidden>→</span>
+    </a>
+    <div class="mt-2 space-y-1">
+      {
+        projects.map((p) => (
+          <a
+            href={`${base}/portfolio/${p.id}`}
+            class="block py-1 hover:text-foreground text-muted-foreground transition-colors truncate"
+          >
+            {p.data.title}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="my-6 h-px bg-border"></div>
+
+  <div class="space-y-2">
+    <a
+      href={base + "/about"}
+      class="block hover:text-foreground text-muted-foreground transition-colors"
+    >
+      About
+    </a>
+    <div class="flex items-center gap-3 pt-2">
+      <a
+        href={siteConfig.author.github}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="GitHub"
+        class="text-muted-foreground hover:text-foreground transition-colors"
+      >
+        <Github className="size-4" />
+      </a>
+      <a
+        href={`mailto:${siteConfig.author.email}`}
+        aria-label="Email"
+        class="text-muted-foreground hover:text-foreground transition-colors"
+      >
+        <Mail className="size-4" />
+      </a>
+    </div>
+  </div>
+</aside>

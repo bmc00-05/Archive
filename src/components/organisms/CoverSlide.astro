@@ -1,0 +1,101 @@
+---
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Github, ExternalLink, FileText } from "lucide-react";
+
+interface Props {
+  data: {
+    title: string;
+    summary: string;
+    period: string;
+    role: string;
+    stack: readonly string[];
+    teamSize?: number;
+    repo?: string;
+    demo?: string;
+    deck?: string;
+  };
+}
+
+const { data } = Astro.props;
+---
+
+<section
+  data-slide
+  data-slug="cover"
+  data-layout="hero"
+  class="slide-canvas"
+>
+  <p class="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+    Portfolio
+  </p>
+
+  <h1 class="mt-3 text-4xl md:text-6xl font-bold tracking-tight leading-tight max-w-4xl">
+    {data.title}
+  </h1>
+
+  <p class="mt-5 text-lg md:text-xl text-muted-foreground max-w-2xl">
+    {data.summary}
+  </p>
+
+  {/* Meta */}
+  <div class="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
+    <span class="inline-flex items-center gap-1.5">
+      <span class="text-xs uppercase tracking-wider text-muted-foreground">기간</span>
+      <span class="font-medium">{data.period}</span>
+    </span>
+    <span aria-hidden class="text-muted-foreground">·</span>
+    <span class="inline-flex items-center gap-1.5">
+      <span class="text-xs uppercase tracking-wider text-muted-foreground">역할</span>
+      <span class="font-medium">{data.role}</span>
+    </span>
+    {data.teamSize && (
+      <>
+        <span aria-hidden class="text-muted-foreground">·</span>
+        <span class="inline-flex items-center gap-1.5">
+          <span class="text-xs uppercase tracking-wider text-muted-foreground">팀</span>
+          <span class="font-medium">{data.teamSize}인</span>
+        </span>
+      </>
+    )}
+  </div>
+
+  {/* Stack */}
+  <div class="mt-6 flex flex-wrap justify-center gap-1.5 max-w-3xl">
+    {data.stack.map((s) => (
+      <Badge variant="secondary" className="font-normal">{s}</Badge>
+    ))}
+  </div>
+
+  {/* Links */}
+  {(data.repo || data.demo || data.deck) && (
+    <div class="mt-8 flex flex-wrap justify-center gap-2">
+      {data.repo && (
+        <Button variant="outline" size="sm" asChild>
+          <a href={data.repo} target="_blank" rel="noopener noreferrer">
+            <Github className="size-4" /> Repository
+          </a>
+        </Button>
+      )}
+      {data.demo && (
+        <Button variant="outline" size="sm" asChild>
+          <a href={data.demo} target="_blank" rel="noopener noreferrer">
+            <ExternalLink className="size-4" /> Live Demo
+          </a>
+        </Button>
+      )}
+      {data.deck && (
+        <Button variant="outline" size="sm" asChild>
+          <a href={data.deck} target="_blank" rel="noopener noreferrer">
+            <FileText className="size-4" /> 발표 자료
+          </a>
+        </Button>
+      )}
+    </div>
+  )}
+
+  {/* 스크롤/키보드 힌트 */}
+  <p class="mt-12 text-xs text-muted-foreground/60">
+    스크롤하거나 <kbd class="px-1.5 py-0.5 rounded border bg-muted/40 text-[10px]">↓</kbd> 키로 다음 슬라이드
+  </p>
+</section>

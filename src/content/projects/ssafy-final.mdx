@@ -1,0 +1,128 @@
+---
+title: "SSAFY 14기 최종 프로젝트"
+summary: "팀 프로젝트로 진행한 풀스택 서비스. 한 줄로 서비스 가치를 요약하세요."
+period: "2026.04 - 2026.05"
+role: "Frontend Lead"
+stack:
+  - "TypeScript"
+  - "React"
+  - "Vite"
+  - "TailwindCSS"
+  - "Spring Boot"
+  - "MySQL"
+  - "Docker"
+teamSize: 6
+featured: true
+order: 1
+repo: "https://github.com/bmc00-05"
+---
+
+<Slide id="overview" title="Overview" layout="default">
+  <Hero eyebrow="한 줄 요약">
+    이 서비스가 어떤 문제를 어떻게 해결하는지 한두 문장으로 작성합니다.
+  </Hero>
+
+  <Row gap="md">
+    <Stat label="개발 기간" value="6주" />
+    <Stat label="팀 규모" value="6인" subtext="FE 3 · BE 2 · AI 1" />
+    <Stat label="역할" value="FE Lead" />
+  </Row>
+</Slide>
+
+<Slide id="problem" title="Problem">
+  <Cols n={2}>
+    <Stack>
+      해결하려고 했던 문제와 사용자의 페인 포인트를 구체적으로 서술합니다.
+
+      - 페인 포인트 1
+      - 페인 포인트 2
+      - 페인 포인트 3
+    </Stack>
+    <Box>
+      > "관련된 사용자 인터뷰 인용이나 통계 한 줄."
+      >
+      > — 인터뷰이 / 출처
+    </Box>
+  </Cols>
+</Slide>
+
+<Slide id="solution" title="Solution">
+  핵심 기능과 차별점을 정리합니다.
+
+  <Cols n={3} gap="md">
+    <Box>
+      ### 핵심 기능 1
+      한 줄 설명.
+    </Box>
+    <Box>
+      ### 핵심 기능 2
+      한 줄 설명.
+    </Box>
+    <Box>
+      ### 핵심 기능 3
+      한 줄 설명.
+    </Box>
+  </Cols>
+</Slide>
+
+<Slide id="architecture" title="Architecture">
+  <Cols n={2}>
+    <Stack>
+      클라이언트는 React SPA로 빌드되어 CDN에 정적 배포되며, 백엔드는 Spring Boot 기반 REST API와 MySQL로 구성됩니다.
+
+      - **Frontend**: Vite + React + Tailwind
+      - **Backend**: Spring Boot + MySQL
+      - **Infra**: Docker · Nginx · GitHub Actions
+    </Stack>
+    <Box>
+      ```text
+      [Client]
+         │
+         ▼
+      [API Gateway]
+         │
+         ├─▶ [Auth]
+         ├─▶ [Main]
+         └─▶ [Search]
+      ```
+    </Box>
+  </Cols>
+</Slide>
+
+<Slide id="challenges" title="Technical Challenges">
+  <Stack gap="lg">
+    <div>
+      ### 1. 도전 과제 제목
+      어떤 상황에서 무엇이 어려웠고, 어떻게 풀었는지. 측정 가능한 개선 지표가 있으면 함께.
+    </div>
+    <div>
+      ### 2. 도전 과제 제목
+      두 번째 도전 과제 서술.
+    </div>
+  </Stack>
+</Slide>
+
+<Slide id="results" title="Results" layout="center">
+  <Row gap="md">
+    <Stat label="응답 속도" value="120ms" subtext="이전 대비 60% 단축" />
+    <Stat label="동시 사용자" value="500+" subtext="부하 테스트 기준" />
+    <Stat label="Lighthouse" value="98" subtext="모바일 점수" />
+  </Row>
+
+  <Stack gap="sm" className="mt-8 max-w-xl mx-auto text-left">
+    - **정량 성과**: 위 지표 외 추가 항목
+    - **정성 성과**: 수상, 발표, 사용자 피드백
+    - **배운 점**: 회고 핵심 한 줄
+  </Stack>
+</Slide>
+
+<Slide id="screenshots" title="Screenshots">
+  <Cols n={2}>
+    <Box className="text-center text-sm text-muted-foreground py-8">
+      스크린샷 자리 1
+    </Box>
+    <Box className="text-center text-sm text-muted-foreground py-8">
+      스크린샷 자리 2
+    </Box>
+  </Cols>
+</Slide>
