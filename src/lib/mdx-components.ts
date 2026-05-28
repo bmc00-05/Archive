@@ -1,5 +1,8 @@
 import { Figure } from "@/components/mdx/Figure";
 import { Slide } from "@/components/mdx/Slide";
+import TroubleshootingList from "@/components/molecules/TroubleshootingList";
+import FeatureList from "@/components/molecules/FeatureList";
+import ArchitectureDiagram from "@/components/molecules/ArchitectureDiagram";
 import {
   Box,
   Center,
@@ -26,4 +29,7 @@ export const mdxComponents = {
   Stat,
   FullBleed,
   Box,
+  TroubleshootingList,
+  FeatureList,
+  ArchitectureDiagram,
 };

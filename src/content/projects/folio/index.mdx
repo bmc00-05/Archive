@@ -1,0 +1,165 @@
+---
+title: "Folio"
+summary: "소설 작가를 위한 통합 에디터."
+period: "2026.04.07 - 2026.05.18"
+role: "FE, AI, Infra"
+stack:
+  - "Electron"
+  - "React"
+  - "TypeScript"
+  - "Spring"
+  - "FastAPI"
+  - "PostgreSQL"
+teamSize: 6
+featured: true
+order: 2
+cover: ./cover.png
+# repo: "https://github.com/bmc00-05/folio"
+# demo: "https://folio.example.com"
+# deck: "https://docs.google.com/..."
+---
+
+import cover from "./cover.png";
+import overview from "./screenshots/overview_1.png";
+import OverviewShowcase from "@/components/molecules/OverviewShowcase";
+import { EditorDiagram, DeployDiagram, AiDiagram } from "@/components/molecules/FeatureDiagrams";
+
+{/* 실제 화면 스크린샷이 준비되면 ./screenshots/feature-1.png 등으로 교체 */}
+export const overviewFeatures = [
+  {
+    title: "집필에 필요한 다양한 도구",
+    subText: "이 카드를 선택하면 보이는 서브 설명을 작성합니다.",
+    imageSrc: overview.src,
+    imageAlt: "Folio 기능 1",
+  },
+  {
+    title: "웹소켓 기반 실시간 클라우드 동기화",
+    subText: "두 번째 카드의 서브 설명. 어떤 점이 차별화되는지 한 줄.",
+    imageSrc: cover.src,
+    imageAlt: "Folio 기능 2",
+  },
+  {
+    title: "AI Agent",
+    subText: "세 번째 카드의 서브 설명. 사용자에게 어떤 가치를 주는지.",
+    imageSrc: cover.src,
+    imageAlt: "Folio 기능 3",
+  },
+];
+
+<Slide id="overview" title="Overview" layout="default">
+  <div className="not-prose w-full">
+    <OverviewShowcase
+      client:visible
+      mainTitle="소설 작가를 위한 통합 에디터."
+      features={overviewFeatures}
+    />
+  </div>
+</Slide>
+
+export const featureItems = [
+  {
+    title: "데스크탑 앱 에디터 UI 구현",
+    description: "에디터의 전체적인 디자인 및 핵심 기능을 구현하였습니다.",
+    tags: ["Electron", "TypeScript", "React"],
+    details: [
+      "1번 디테일", 
+      "2번 디테일", 
+      "3번 디테일", 
+    ],
+    diagram: EditorDiagram,
+  },
+  {
+    title: "개발 환경 및 배포 인프라 구현",
+    description: "GitLab Runner를 이용한 배포 자동화 및 도커 컨테이너를 이용한 블루그린 무중단 배포를 구현하였습니다.",
+    tags: ["GitLab CI", "Docker", "Nginx"],
+        details: [
+      "1번 디테일", 
+      "2번 디테일", 
+      "3번 디테일", 
+    ],
+    diagram: DeployDiagram,
+  },
+  {
+    title: "AI 기능 구현",
+    description: "MCP 서버와 벡터DB를 이용한 AI 파이프라인 및 각종 도구와 프롬프트를 구현하였습니다.",
+    tags: ["FastAPI", "pgvector", "MCP"],
+        details: [
+      "1번 디테일", 
+      "2번 디테일", 
+      "3번 디테일", 
+    ],
+    diagram: AiDiagram,
+  },
+];
+
+<Slide id="features" title="Features">
+  <FeatureList items={featureItems} />
+</Slide>
+
+<Slide id="architecture" title="Architecture">
+  <div className="not-prose grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-4 md:gap-8 items-center w-full">
+    <ArchitectureDiagram />
+    <div className="flex flex-col gap-3 text-sm md:text-base leading-relaxed">
+      <p className="font-semibold text-foreground">Local-first + Dual Server 구조</p>
+      <ul className="space-y-2 text-muted-foreground list-disc pl-5">
+        <li>Electron 데스크탑 앱은 <strong>WA-SQLite</strong>로 로컬 우선 동작, 네트워크 단절에도 작성 가능</li>
+        <li><strong>PowerSync</strong>가 로컬 SQLite ↔ PostgreSQL 양방향 동기화 + writer_id 기반 RLS</li>
+        <li>메인 API는 <strong>Spring Boot</strong> (Java 21, OAuth2/JWT/Vault), AI는 <strong>FastAPI</strong> (Celery·LLM) 로 분리</li>
+        <li>데이터는 <strong>PostgreSQL + pgvector</strong>(임베딩 검색) + Redis(큐/캐시) + Vault(KEK 관리)</li>
+      </ul>
+    </div>
+  </div>
+</Slide>
+
+export const troubleshootingItems = [
+  {
+    title: "개인키 암호화",
+    problem: "민감 정보 보호를 위한 KEK 암호화를 적용하는 과정에서 AI가 암호화된 DB 데이터를 읽을 수 없는 문제가 발생하였습니다.",
+    solution: "개인키 및 서버키 동시 Wrapping을 통해 암호화를 구현하고 서버키를 격리시켜 관리함으로써 서버키 유출없이 서버 복호화 문제를 해결했습니다.",
+    // imageSrc: shotIssue1.src,
+    // imageAlt: "이슈 1 화면",
+  },
+  {
+    title: "트러블슈팅 제목 2",
+    problem: "어떤 문제가 발생했는지, 어떤 상황이었는지 구체적으로 서술합니다.",
+    solution: "어떻게 분석하고 어떤 기술/접근으로 해결했는지 서술합니다.",
+    // imageSrc: shotIssue2.src,
+    // imageAlt: "이슈 2 화면",
+  },
+];
+
+<Slide id="troubleshooting" title="Troubleshooting">
+  <TroubleshootingList items={troubleshootingItems} />
+</Slide>
+
+<Slide id="results" title="Results">
+  <Row gap="md">
+    <Stat label="지표 1" value="??" subtext="설명" />
+    <Stat label="지표 2" value="??" subtext="설명" />
+    <Stat label="지표 3" value="??" subtext="설명" />
+  </Row>
+</Slide>
+
+<Slide id="retrospective" title="Retrospective">
+  <div className="not-prose grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 w-full">
+    <div>
+      <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-semibold mb-2">좋았던 점</p>
+      <p className="text-sm md:text-base leading-relaxed">프로젝트를 진행하며 잘 해낸 점, 만족스러운 결정을 기록합니다.</p>
+    </div>
+
+    <div>
+      <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-semibold mb-2">아쉬운 점</p>
+      <p className="text-sm md:text-base leading-relaxed">다시 한다면 다르게 했을 부분, 시간/지식 부족으로 미흡했던 점을 기록합니다.</p>
+    </div>
+
+    <div>
+      <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-semibold mb-2">배운 점</p>
+      <p className="text-sm md:text-base leading-relaxed">프로젝트를 통해 새로 익힌 기술, 사고방식, 협업 인사이트를 기록합니다.</p>
+    </div>
+
+    <div>
+      <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-semibold mb-2">다음에는</p>
+      <p className="text-sm md:text-base leading-relaxed">다음 프로젝트에 적용하고 싶은 시도, 깊이 파고들고 싶은 영역을 기록합니다.</p>
+    </div>
+  </div>
+</Slide>

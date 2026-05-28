@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a1a1a"/>
+      <stop offset="100%" stop-color="#2a2a2a"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" fill="url(#g)"/>
+  <text x="400" y="240" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="68" font-weight="700" fill="#fafafa" letter-spacing="-2">Folio</text>
+  <text x="400" y="285" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="400" fill="#888" letter-spacing="2">PROJECT · COVER PLACEHOLDER</text>
+</svg>

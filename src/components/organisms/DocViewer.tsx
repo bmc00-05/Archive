@@ -8,6 +8,22 @@ interface Props {
   articleId: string;
 }
 
+/** CSS 변수 --header-h 를 px 로 환산. (rem 단위 우선 지원) */
+function readHeaderHeightPx(): number {
+  if (typeof window === "undefined") return 56;
+  const raw = getComputedStyle(document.documentElement)
+    .getPropertyValue("--header-h")
+    .trim();
+  if (!raw) return 56;
+  if (raw.endsWith("rem")) {
+    const rootFs = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+    return parseFloat(raw) * rootFs;
+  }
+  if (raw.endsWith("px")) return parseFloat(raw);
+  const n = parseFloat(raw);
+  return Number.isFinite(n) ? n : 56;
+}
+
 interface SlideMeta {
   slug: string;
   title: string;
@@ -111,14 +127,20 @@ export default function DocViewer({ articleId }: Props) {
 
       setActiveIdx(next);
       isProgrammaticScroll.current = true;
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
+
+      // 명시적 좌표 계산: 헤더 높이만큼 보정해 정확한 위치로 스크롤.
+      // scrollIntoView 보다 결정적이라 경계(첫·마지막) 슬라이드도 안전.
+      const headerH = readHeaderHeightPx();
+      const absTop = target.getBoundingClientRect().top + window.scrollY;
+      const targetY = Math.max(0, absTop - headerH);
+      window.scrollTo({ top: targetY, behavior: "smooth" });
 
       if (programmaticTimer.current) {
         window.clearTimeout(programmaticTimer.current);
       }
       programmaticTimer.current = window.setTimeout(() => {
         isProgrammaticScroll.current = false;
-      }, 600);
+      }, 700);
     },
     [slides, articleId]
   );
