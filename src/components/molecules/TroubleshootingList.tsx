@@ -10,6 +10,8 @@ export interface TroubleshootingItem {
   /** 우측 시각 자료 이미지 — astro:assets 의 .src 값. 없으면 placeholder 표시 */
   imageSrc?: string;
   imageAlt?: string;
+  /** 이미지 대신 표시할 다이어그램 컴포넌트 (image > diagram > placeholder 우선순위) */
+  diagram?: React.ComponentType;
 }
 
 interface Props {
@@ -48,20 +50,20 @@ export default function TroubleshootingList({ items, className }: Props) {
               </h3>
             </div>
 
-            <div className="rounded-lg bg-muted/40 px-4 py-3 flex items-center">
-              <p className="text-sm md:text-base font-semibold leading-snug">
+            <div className="rounded-lg bg-muted/60 dark:bg-muted/25 px-4 py-3 flex items-center">
+              <p className="text-sm md:text-[15px] text-muted-foreground leading-relaxed font-normal">
                 {item.problem}
               </p>
             </div>
 
             <div className="flex justify-center -my-1" aria-hidden="true">
-              <span className="text-sm leading-none text-muted-foreground/70 select-none">
+              <span className="text-sm leading-none text-muted-foreground/50 select-none">
                 ↓
               </span>
             </div>
 
-            <div className="rounded-lg bg-muted/40 px-4 py-3 flex items-center">
-              <p className="text-sm md:text-base font-semibold leading-snug">
+            <div className="rounded-lg bg-muted/60 dark:bg-muted/25 px-4 py-3 flex items-center">
+              <p className="text-sm md:text-[15px] text-muted-foreground leading-relaxed font-normal">
                 {item.solution}
               </p>
             </div>
@@ -77,6 +79,8 @@ export default function TroubleshootingList({ items, className }: Props) {
                 className="w-full h-full object-cover"
               />
             </div>
+          ) : item.diagram ? (
+            <item.diagram />
           ) : (
             <div className="rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/15 aspect-video flex items-center justify-center text-xs text-muted-foreground/60">
               참고 시각 자료

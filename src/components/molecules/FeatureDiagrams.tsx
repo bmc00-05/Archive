@@ -24,34 +24,27 @@ interface NodeProps {
   label: string;
   color?: string;
   className?: string;
-  /** 작은 노드 (label 한 줄) */
-  small?: boolean;
 }
 
 /**
- * 미니 다이어그램용 노드. 정사각형 아이콘 박스 + 하단 라벨.
- * 부모 컨테이너의 absolute 좌표(top/left percent)로 위치 지정.
+ * 미니 다이어그램용 노드. 큰 정사각형 아이콘 박스 + 하단 라벨.
+ * 컴팩트하게 꽉찬 시각을 위해 사이즈 통일 + 키움.
  */
-function Node({ icon: Icon, label, color, className, small }: NodeProps) {
+function Node({ icon: Icon, label, color, className }: NodeProps) {
   return (
     <div
       className={cn(
-        "absolute flex flex-col items-center gap-0.5 -translate-x-1/2 -translate-y-1/2",
+        "absolute flex flex-col items-center gap-1 -translate-x-1/2 -translate-y-1/2",
         className
       )}
     >
-      <div
-        className={cn(
-          "rounded-md border bg-card shadow-sm flex items-center justify-center",
-          small ? "size-7 md:size-8" : "size-8 md:size-9"
-        )}
-      >
+      <div className="size-11 md:size-12 rounded-md border bg-card shadow-sm flex items-center justify-center">
         <Icon
-          className={cn(small ? "size-3.5 md:size-4" : "size-4 md:size-5")}
+          className="size-6 md:size-7"
           style={color ? { color } : undefined}
         />
       </div>
-      <span className="text-[8px] md:text-[9px] font-semibold leading-none whitespace-nowrap">
+      <span className="text-[10px] md:text-[11px] font-semibold leading-none whitespace-nowrap">
         {label}
       </span>
     </div>
@@ -61,7 +54,6 @@ function Node({ icon: Icon, label, color, className, small }: NodeProps) {
 interface DiagramContainerProps {
   children: React.ReactNode;
   className?: string;
-  /** SVG viewBox (default 400x225 = 16:9) */
   viewBox?: string;
 }
 
@@ -89,8 +81,8 @@ function DiagramContainer({
             viewBox="0 0 10 10"
             refX="9"
             refY="5"
-            markerWidth="5"
-            markerHeight="5"
+            markerWidth="6"
+            markerHeight="6"
             orient="auto"
           >
             <path
@@ -103,8 +95,8 @@ function DiagramContainer({
             viewBox="0 0 10 10"
             refX="9"
             refY="5"
-            markerWidth="5"
-            markerHeight="5"
+            markerWidth="6"
+            markerHeight="6"
             orient="auto"
           >
             <path d="M 0 0 L 10 5 L 0 10 z" className="fill-emerald-500" />
@@ -118,127 +110,101 @@ function DiagramContainer({
 
 /* ──────────────────────────────────────────────
  * Feature 1: Editor UI 구현
- *  Electron shell → React + Tiptap → Zustand → WA-SQLite
+ *  Electron → Tiptap (React 기반) → Zustand → WA-SQLite
  * ────────────────────────────────────────────── */
 export function EditorDiagram() {
   return (
     <DiagramContainer>
-      {/* 화살표 (직각 우측 흐름) */}
+      {/* 짧은 직각 화살표 (좌→우) */}
       <path
-        d="M 78 112 H 130"
+        d="M 70 112 H 90"
         fill="none"
         className="stroke-muted-foreground/60"
-        strokeWidth="1.4"
+        strokeWidth="1.6"
         markerEnd="url(#m-arr)"
       />
       <path
-        d="M 200 112 H 252"
+        d="M 170 112 H 190"
         fill="none"
         className="stroke-muted-foreground/60"
-        strokeWidth="1.4"
+        strokeWidth="1.6"
         markerEnd="url(#m-arr)"
       />
       <path
-        d="M 322 112 H 374"
+        d="M 270 112 H 290"
         fill="none"
         className="stroke-muted-foreground/60"
-        strokeWidth="1.4"
+        strokeWidth="1.6"
         markerEnd="url(#m-arr)"
-      />
-      {/* React와 Tiptap 묶는 점선 박스 */}
-      <rect
-        x="140"
-        y="78"
-        width="120"
-        height="70"
-        rx="6"
-        fill="none"
-        strokeDasharray="3 2"
-        className="stroke-muted-foreground/30"
-        strokeWidth="1"
       />
 
-      {/* 노드 — 좌→우 흐름 */}
       <foreignObject x="0" y="0" width="100%" height="100%">
         <div className="relative w-full h-full">
           <Node
             icon={SiElectron}
             label="Electron"
             color="#47848F"
-            className="left-[10%] top-[50%]"
-          />
-          <Node
-            icon={SiReact}
-            label="React"
-            color="#61DAFB"
-            className="left-[37%] top-[50%]"
-            small
+            className="left-[12%] top-[50%]"
           />
           <Node
             icon={Pencil}
             label="Tiptap"
             color="#0d9488"
-            className="left-[52%] top-[50%]"
-            small
+            className="left-[37%] top-[50%]"
           />
           <Node
             icon={Boxes}
             label="Zustand"
-            className="left-[71%] top-[50%]"
+            className="left-[62%] top-[50%]"
           />
           <Node
             icon={Database}
             label="WA-SQLite"
             color="#003B57"
-            className="right-[7%] top-[50%]"
+            className="left-[87%] top-[50%]"
           />
         </div>
       </foreignObject>
-
-      {/* 캡션 (좌상단) */}
-      <div className="absolute top-2 left-3 text-[9px] uppercase tracking-[0.15em] text-muted-foreground/70 font-semibold">
-        Editor UI Stack
-      </div>
     </DiagramContainer>
   );
 }
 
 /* ──────────────────────────────────────────────
  * Feature 2: 배포 인프라
- *  Git Push → GitLab Runner → Docker → Blue/Green
+ *  Git → Runner → Docker → Blue/Green
  * ────────────────────────────────────────────── */
 export function DeployDiagram() {
   return (
     <DiagramContainer>
-      {/* 직각 화살표 — 좌→우 흐름 */}
+      {/* 짧은 화살표 */}
       <path
-        d="M 78 112 H 138"
+        d="M 70 112 H 90"
         fill="none"
         className="stroke-muted-foreground/60"
-        strokeWidth="1.4"
+        strokeWidth="1.6"
         markerEnd="url(#m-arr)"
       />
       <path
-        d="M 192 112 H 248"
+        d="M 170 112 H 190"
         fill="none"
         className="stroke-muted-foreground/60"
-        strokeWidth="1.4"
+        strokeWidth="1.6"
         markerEnd="url(#m-arr)"
       />
-      {/* Docker → Blue 분기 (위) */}
+      {/* Docker → Blue (위쪽 분기) */}
       <path
-        d="M 305 100 V 75 H 360"
+        d="M 248 90 V 70 H 280"
         fill="none"
         className="stroke-emerald-500"
-        strokeWidth="1.4"
+        strokeWidth="1.6"
         markerEnd="url(#m-arr-em)"
       />
-      {/* Docker → Green 분기 (아래) */}
+      {/* Docker → Green (아래쪽 분기) */}
       <path
-        d="M 305 124 V 152 H 360"
+        d="M 248 134 V 155 H 280"
         fill="none"
         className="stroke-muted-foreground/50"
-        strokeWidth="1.4"
+        strokeWidth="1.6"
         strokeDasharray="3 2"
         markerEnd="url(#m-arr)"
       />
@@ -248,90 +214,82 @@ export function DeployDiagram() {
           <Node
             icon={GitBranch}
             label="Git Push"
-            className="left-[10%] top-[50%]"
+            className="left-[12%] top-[50%]"
           />
           <Node
             icon={SiGitlab}
             label="Runner"
             color="#FC6D26"
-            className="left-[40%] top-[50%]"
-            small
+            className="left-[37%] top-[50%]"
           />
           <Node
             icon={SiDocker}
-            label="Docker Build"
+            label="Docker"
             color="#2496ED"
-            className="left-[68%] top-[50%]"
-            small
+            className="left-[62%] top-[50%]"
           />
           <Node
             icon={ToggleLeft}
             label="Blue · 활성"
             color="#10b981"
-            className="right-[7%] top-[33%]"
-            small
+            className="left-[87%] top-[28%]"
           />
           <Node
             icon={ArrowLeftRight}
             label="Green · 대기"
-            className="right-[7%] top-[68%]"
-            small
+            className="left-[87%] top-[72%]"
           />
         </div>
       </foreignObject>
-
-      <div className="absolute top-2 left-3 text-[9px] uppercase tracking-[0.15em] text-muted-foreground/70 font-semibold">
-        CI/CD · Blue-Green
-      </div>
     </DiagramContainer>
   );
 }
 
 /* ──────────────────────────────────────────────
  * Feature 3: AI 기능 구현
- *  Client → FastAPI → MCP Tools / pgvector → LLM
+ *  Client → FastAPI → MCP + pgvector → LLM
  * ────────────────────────────────────────────── */
 export function AiDiagram() {
   return (
     <DiagramContainer>
-      {/* User → FastAPI (직각) */}
+      {/* Client → FastAPI */}
       <path
-        d="M 78 112 H 130"
+        d="M 70 112 H 90"
         fill="none"
         className="stroke-muted-foreground/60"
-        strokeWidth="1.4"
+        strokeWidth="1.6"
         markerEnd="url(#m-arr)"
       />
-      {/* FastAPI → MCP (분기 상) */}
+      {/* FastAPI → MCP (위 분기) */}
       <path
-        d="M 188 100 V 60 H 248"
+        d="M 168 90 V 70 H 200"
         fill="none"
         className="stroke-muted-foreground/60"
-        strokeWidth="1.4"
+        strokeWidth="1.6"
         markerEnd="url(#m-arr)"
       />
-      {/* FastAPI → pgvector (분기 하) */}
+      {/* FastAPI → pgvector (아래 분기) */}
       <path
-        d="M 188 124 V 165 H 248"
+        d="M 168 134 V 155 H 200"
         fill="none"
         className="stroke-muted-foreground/60"
-        strokeWidth="1.4"
+        strokeWidth="1.6"
         markerEnd="url(#m-arr)"
       />
       {/* MCP → LLM */}
       <path
-        d="M 310 60 H 374"
+        d="M 268 65 H 295"
         fill="none"
         className="stroke-muted-foreground/60"
-        strokeWidth="1.4"
+        strokeWidth="1.6"
         markerEnd="url(#m-arr)"
       />
-      {/* pgvector → LLM (위로 합류) */}
+      {/* pgvector ⇢ LLM (context 흐름) */}
       <path
-        d="M 310 165 H 348 V 60"
+        d="M 268 155 H 290 V 70"
         fill="none"
         className="stroke-emerald-500"
-        strokeWidth="1.2"
+        strokeWidth="1.4"
         strokeDasharray="3 2"
       />
 
@@ -340,39 +298,33 @@ export function AiDiagram() {
           <Node
             icon={Server}
             label="Client"
-            className="left-[10%] top-[50%]"
+            className="left-[12%] top-[50%]"
           />
           <Node
             icon={SiFastapi}
             label="FastAPI"
             color="#009688"
-            className="left-[42%] top-[50%]"
+            className="left-[37%] top-[50%]"
           />
           <Node
             icon={Boxes}
             label="MCP Tools"
-            className="left-[70%] top-[26%]"
-            small
+            className="left-[62%] top-[28%]"
           />
           <Node
             icon={SiPostgresql}
             label="pgvector"
             color="#4169E1"
-            className="left-[70%] top-[73%]"
-            small
+            className="left-[62%] top-[72%]"
           />
           <Node
             icon={Bot}
             label="LLM"
             color="#f97316"
-            className="right-[7%] top-[26%]"
+            className="left-[87%] top-[28%]"
           />
         </div>
       </foreignObject>
-
-      <div className="absolute top-2 left-3 text-[9px] uppercase tracking-[0.15em] text-muted-foreground/70 font-semibold">
-        AI Pipeline · RAG
-      </div>
     </DiagramContainer>
   );
 }

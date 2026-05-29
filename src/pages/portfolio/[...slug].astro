@@ -3,8 +3,9 @@ import { type CollectionEntry, getCollection, render } from "astro:content";
 import PortfolioLayout from "@/layouts/PortfolioLayout.astro";
 import CoverSlide from "@/components/organisms/CoverSlide.astro";
 import DocViewer from "@/components/organisms/DocViewer";
+import PortfolioNavMenu from "@/components/organisms/PortfolioNavMenu";
 import { mdxComponents } from "@/lib/mdx-components";
-import { ArrowLeft } from "lucide-react";
+import { getPublishedProjects } from "@/lib/content";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects", ({ data }) => !data.draft);
@@ -23,18 +24,23 @@ const { Content } = await render(entry);
 const { data } = entry;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const articleId = "project-article";
+
+const allProjects = await getPublishedProjects();
+const navItems = allProjects.map((p) => ({
+  id: p.id,
+  title: p.data.title,
+  href: `${base}/portfolio/${p.id}`,
+}));
 ---
 
 <PortfolioLayout title={`${data.title} — Portfolio`} description={data.summary} wide>
-  {/* Floating 뒤로가기 (모드 토글과 대칭으로 좌상단) */}
-  <a
-    href={base + "/portfolio"}
-    class="fixed top-[4.5rem] left-5 z-50 inline-flex items-center gap-1.5 rounded-full border bg-background/80 backdrop-blur px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-background transition-colors shadow-sm"
-    aria-label="Back to portfolio"
-  >
-    <ArrowLeft className="size-3.5" />
-    <span class="hidden sm:inline">Portfolio</span>
-  </a>
+  {/* Floating 포트폴리오 네비 — 전체 항목으로 빠른 이동 */}
+  <PortfolioNavMenu
+    client:load
+    rootHref={base + "/portfolio"}
+    items={navItems}
+    currentId={entry.id}
+  />
 
   <article
     id={articleId}

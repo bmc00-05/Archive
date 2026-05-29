@@ -1,0 +1,58 @@
+---
+import { familiarStack } from "@/lib/familiar-stack";
+---
+
+{/* `<details>` 네이티브 토글 — JS 0 */}
+<details class="group/familiar mt-6">
+  <summary
+    class="cursor-pointer list-none select-none flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
+  >
+    <span
+      class="inline-flex size-4 items-center justify-center rounded-full border text-[10px] leading-none transition-transform group-open/familiar:rotate-45"
+      aria-hidden="true"
+    >
+      +
+    </span>
+    <span>Familiar</span>
+    <span class="text-[11px] font-normal text-muted-foreground/60">
+      한 번이라도 접해본 기술
+    </span>
+  </summary>
+
+  <div class="mt-3 space-y-3">
+    {
+      familiarStack.map((group) => (
+        <div>
+          <p class="text-[11px] uppercase tracking-wider text-muted-foreground mb-1.5">
+            {group.title}
+          </p>
+          <div class="flex flex-wrap gap-1.5 not-prose">
+            {group.items.map((item) => {
+              const Icon = item.icon;
+              return (
+                <span
+                  class="inline-flex items-center gap-1.5 rounded-md border bg-card/60 hover:bg-card transition-colors px-2 py-1 text-xs"
+                  title={item.name}
+                >
+                  <Icon
+                    className="size-3.5 shrink-0"
+                    style={item.color ? { color: item.color } : undefined}
+                    aria-hidden="true"
+                  />
+                  <span class="text-muted-foreground">{item.name}</span>
+                </span>
+              );
+            })}
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</details>
+
+<style>
+  /* webkit summary marker 제거 */
+  summary::-webkit-details-marker {
+    display: none;
+  }
+</style>

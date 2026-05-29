@@ -7,7 +7,7 @@ stack:
   - "Electron"
   - "React"
   - "TypeScript"
-  - "Spring"
+  - "Spring Boot"
   - "FastAPI"
   - "PostgreSQL"
 teamSize: 6
@@ -23,24 +23,26 @@ import cover from "./cover.png";
 import overview from "./screenshots/overview_1.png";
 import OverviewShowcase from "@/components/molecules/OverviewShowcase";
 import { EditorDiagram, DeployDiagram, AiDiagram } from "@/components/molecules/FeatureDiagrams";
+import { EncryptionDiagram, SyncBatchingDiagram } from "@/components/molecules/TroubleshootingDiagrams";
+import { ThumbsUp, BookOpen, AlertTriangle, ArrowRight } from "lucide-react";
 
 {/* 실제 화면 스크린샷이 준비되면 ./screenshots/feature-1.png 등으로 교체 */}
 export const overviewFeatures = [
   {
     title: "집필에 필요한 다양한 도구",
-    subText: "이 카드를 선택하면 보이는 서브 설명을 작성합니다.",
+    subText: "글 작성에 필요한 다양한 스타일링 및 편의성 도구를 지원합니다.",
     imageSrc: overview.src,
     imageAlt: "Folio 기능 1",
   },
   {
     title: "웹소켓 기반 실시간 클라우드 동기화",
-    subText: "두 번째 카드의 서브 설명. 어떤 점이 차별화되는지 한 줄.",
+    subText: "로컬 기반 클라우드 동기화로 오프라인 사용이 가능합니다.",
     imageSrc: cover.src,
     imageAlt: "Folio 기능 2",
   },
   {
     title: "AI Agent",
-    subText: "세 번째 카드의 서브 설명. 사용자에게 어떤 가치를 주는지.",
+    subText: "다양한 도구를 AI가 스스로 판단하여 파일을 탐색하고 보조 기능을 제공합니다.",
     imageSrc: cover.src,
     imageAlt: "Folio 기능 3",
   },
@@ -62,9 +64,9 @@ export const featureItems = [
     description: "에디터의 전체적인 디자인 및 핵심 기능을 구현하였습니다.",
     tags: ["Electron", "TypeScript", "React"],
     details: [
-      "1번 디테일", 
-      "2번 디테일", 
-      "3번 디테일", 
+      "DnD-kit을 이용한 드래그 드롭 UI", 
+      "도움말 표시 기능을 통한 최초 사용자 진입 장벽 완화", 
+      "낙관적 업데이트 통한 빠른 UI 피드백", 
     ],
     diagram: EditorDiagram,
   },
@@ -73,9 +75,9 @@ export const featureItems = [
     description: "GitLab Runner를 이용한 배포 자동화 및 도커 컨테이너를 이용한 블루그린 무중단 배포를 구현하였습니다.",
     tags: ["GitLab CI", "Docker", "Nginx"],
         details: [
-      "1번 디테일", 
-      "2번 디테일", 
-      "3번 디테일", 
+      "도커 및 시크릿 매니저로 배포와 분리된 개발 환경 구성", 
+      "지정 협업 도구 GitLab을 이용한 서비스앱 배포 자동화", 
+      "프로메테우스 메트릭 및 그라파나 서버 모니터링 구축", 
     ],
     diagram: DeployDiagram,
   },
@@ -84,47 +86,81 @@ export const featureItems = [
     description: "MCP 서버와 벡터DB를 이용한 AI 파이프라인 및 각종 도구와 프롬프트를 구현하였습니다.",
     tags: ["FastAPI", "pgvector", "MCP"],
         details: [
-      "1번 디테일", 
-      "2번 디테일", 
-      "3번 디테일", 
+      "벡터DB 기반 문서 유사도 검색 도구", 
+      "각 문서 DB에 대한 CRUD 도구 구현", 
+      "계층적 문서 탐색 구조를 통한 토큰 절약", 
     ],
     diagram: AiDiagram,
   },
 ];
 
-<Slide id="features" title="Features">
+<Slide id="features" title="My Work">
   <FeatureList items={featureItems} />
 </Slide>
 
+export const architectureDecisions = [
+  {
+    concept: "로컬 퍼스트",
+    stack: "Electron + WA-SQLite",
+    bullets: [
+      "사용자가 공간적 제약을 덜받도록 오프라인 작업 환경 지원",
+      "Tiptap(ProseMirror)이 한국어 IME / 단축키 / 파일시스템 접근에서 PWA·Tauri 대비 우수",
+    ],
+  },
+  {
+    concept: "양방향 동기화",
+    stack: "PowerSync",
+    bullets: [
+      "다기기 / 협업 대응 + RLS(행 단위 권한)로 작가 행 자동 격리",
+      "Yjs·Automerge 대비 last-write-wins로 운영 복잡도 ↓",
+    ],
+  },
+  {
+    concept: "서버 이중화",
+    stack: "Spring Boot + FastAPI",
+    bullets: [
+      "LLM 호출은 느리고 IO-heavy — 단일 서버면 메인 트래픽까지 막힘",
+      "Java로 도메인 명료 표현 + Python으로 LLM/벡터 생태계(OpenAI SDK·LangChain) 활용",
+    ],
+  },
+  {
+    concept: "봉투 암호화",
+    stack: "Vault + pgvector",
+    bullets: [
+      "원고는 민감 자산(작가 IP) — Vault Transit Engine = 자체 KMS 대비 감사 로그·키 순환 우수",
+      "pgvector로 별도 벡터 DB(Pinecone) 운영 비용·일관성 문제 회피",
+    ],
+  },
+];
+
 <Slide id="architecture" title="Architecture">
-  <div className="not-prose grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-4 md:gap-8 items-center w-full">
-    <ArchitectureDiagram />
-    <div className="flex flex-col gap-3 text-sm md:text-base leading-relaxed">
-      <p className="font-semibold text-foreground">Local-first + Dual Server 구조</p>
-      <ul className="space-y-2 text-muted-foreground list-disc pl-5">
-        <li>Electron 데스크탑 앱은 <strong>WA-SQLite</strong>로 로컬 우선 동작, 네트워크 단절에도 작성 가능</li>
-        <li><strong>PowerSync</strong>가 로컬 SQLite ↔ PostgreSQL 양방향 동기화 + writer_id 기반 RLS</li>
-        <li>메인 API는 <strong>Spring Boot</strong> (Java 21, OAuth2/JWT/Vault), AI는 <strong>FastAPI</strong> (Celery·LLM) 로 분리</li>
-        <li>데이터는 <strong>PostgreSQL + pgvector</strong>(임베딩 검색) + Redis(큐/캐시) + Vault(KEK 관리)</li>
-      </ul>
+  <div className="not-prose w-full flex flex-col gap-5 md:gap-6">
+    {/* 상단: 메인(한글 핵심 가치) + 서브(영문 기술 패턴) */}
+    <div className="text-center">
+      <p className="text-2xl md:text-3xl font-bold tracking-tight">원고 손실 방지 · AI 트래픽 격리 · 민감 데이터 보호</p>
+      <p className="text-base md:text-lg text-muted-foreground mt-3">Local-First Desktop · Dual Server · Envelope Encryption</p>
+    </div>
+
+    {/* 하단: 다이어그램 + 4개 디테일 (ArchitectureDecisions 모듈) */}
+    <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-4 md:gap-8 items-center">
+      <ArchitectureDiagram />
+      <ArchitectureDecisions items={architectureDecisions} />
     </div>
   </div>
 </Slide>
 
 export const troubleshootingItems = [
   {
-    title: "개인키 암호화",
-    problem: "민감 정보 보호를 위한 KEK 암호화를 적용하는 과정에서 AI가 암호화된 DB 데이터를 읽을 수 없는 문제가 발생하였습니다.",
-    solution: "개인키 및 서버키 동시 Wrapping을 통해 암호화를 구현하고 서버키를 격리시켜 관리함으로써 서버키 유출없이 서버 복호화 문제를 해결했습니다.",
-    // imageSrc: shotIssue1.src,
-    // imageAlt: "이슈 1 화면",
+    title: "개인키 + 서버키 이중 Wrapping",
+    problem: "원고 보호를 위해 KEK 암호화를 적용하니, AI 서버가 사용자 키 없이는 DB를 읽지 못해 인덱싱·검색이 불가능해졌습니다.",
+    solution: "User Key + Vault 서버키로 DEK를 이중 Wrapping하고 pepper를 메모리에만 보관, Vault 토큰 단독 유출로는 복호화 불가능하게 격리. AI 서버는 짧은 TTL의 unwrap DEK 캐시로 안전하게 접근하도록 했습니다.",
+    diagram: EncryptionDiagram,
   },
   {
-    title: "트러블슈팅 제목 2",
-    problem: "어떤 문제가 발생했는지, 어떤 상황이었는지 구체적으로 서술합니다.",
-    solution: "어떻게 분석하고 어떤 기술/접근으로 해결했는지 서술합니다.",
-    // imageSrc: shotIssue2.src,
-    // imageAlt: "이슈 2 화면",
+    title: "동기화 디바운스 · 쓰로틀 · 배치 처리",
+    problem: "키 입력마다 동기화가 즉시 트리거되어 초당 수십 건의 업로드 요청이 발생, 서버 부하가 급증했습니다.",
+    solution: "에디터 400ms 디바운스 + 업로드 5s 쓰로틀 + 최대 50건 배치 적용. 서버 반영 지연이 ~5s로 늘어나는 트레이드오프를 감수하되, 로컬 저장은 즉시 수행해 작가의 체감 입력 응답성은 유지했습니다.",
+    diagram: SyncBatchingDiagram,
   },
 ];
 
@@ -133,33 +169,54 @@ export const troubleshootingItems = [
 </Slide>
 
 <Slide id="results" title="Results">
-  <Row gap="md">
-    <Stat label="지표 1" value="??" subtext="설명" />
-    <Stat label="지표 2" value="??" subtext="설명" />
-    <Stat label="지표 3" value="??" subtext="설명" />
-  </Row>
+  <div className="not-prose grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 w-full">
+    <Stat label="가입자" value="51" />
+    <Stat label="AI 호출" value="201" />
+    <Stat label="결제 시도" value="78" />
+    <Stat label="작품" value="71" />
+  </div>
 </Slide>
 
+export const retrospectiveItems = [
+  {
+    title: "좋았던 점",
+    icon: ThumbsUp,
+    tone: "soft",
+    bullets: [
+      "프로젝트를 진행하며 잘 해낸 점을 기록합니다.",
+      "DB기반 동기화 시스템을 구현해볼 수 있어 DB에 대해 많이 배울 수 있었습니다.",
+    ],
+  },
+  {
+    title: "배운 점",
+    icon: BookOpen,
+    tone: "soft",
+    bullets: [
+      "Electron을 이용한 데스크탑 앱 개발 및 윈도우 exe 설치 마법사를 통한 배포과정을 경험할 수 있었습니다.",
+      "PostgreSQL의 pgvector와 GIN에 대하여 알게되었습니다.",
+      "TipTap과 같은 위지윅 에디터 라이브러리에 대하여 알게되었습니다.",
+    ],
+  },
+  {
+    title: "아쉬운 점",
+    icon: AlertTriangle,
+    tone: "strong",
+    bullets: [
+      "다시 한다면 다르게 했을 부분을 기록합니다.",
+      "시간·지식 부족으로 미흡했던 점을 기록합니다.",
+    ],
+  },
+  {
+    title: "다음에는",
+    icon: ArrowRight,
+    tone: "strong",
+    bullets: [
+      "다음 프로젝트에 적용하고 싶은 시도를 기록합니다.",
+      "깊이 파고들고 싶은 영역을 기록합니다.",
+    ],
+  },
+];
+
 <Slide id="retrospective" title="Retrospective">
-  <div className="not-prose grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 w-full">
-    <div>
-      <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-semibold mb-2">좋았던 점</p>
-      <p className="text-sm md:text-base leading-relaxed">프로젝트를 진행하며 잘 해낸 점, 만족스러운 결정을 기록합니다.</p>
-    </div>
-
-    <div>
-      <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-semibold mb-2">아쉬운 점</p>
-      <p className="text-sm md:text-base leading-relaxed">다시 한다면 다르게 했을 부분, 시간/지식 부족으로 미흡했던 점을 기록합니다.</p>
-    </div>
-
-    <div>
-      <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-semibold mb-2">배운 점</p>
-      <p className="text-sm md:text-base leading-relaxed">프로젝트를 통해 새로 익힌 기술, 사고방식, 협업 인사이트를 기록합니다.</p>
-    </div>
-
-    <div>
-      <p className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground font-semibold mb-2">다음에는</p>
-      <p className="text-sm md:text-base leading-relaxed">다음 프로젝트에 적용하고 싶은 시도, 깊이 파고들고 싶은 영역을 기록합니다.</p>
-    </div>
-  </div>
+  <RetrospectiveGrid items={retrospectiveItems} />
 </Slide>

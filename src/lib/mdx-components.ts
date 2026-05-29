@@ -3,6 +3,8 @@ import { Slide } from "@/components/mdx/Slide";
 import TroubleshootingList from "@/components/molecules/TroubleshootingList";
 import FeatureList from "@/components/molecules/FeatureList";
 import ArchitectureDiagram from "@/components/molecules/ArchitectureDiagram";
+import ArchitectureDecisions from "@/components/molecules/ArchitectureDecisions";
+import RetrospectiveGrid from "@/components/molecules/RetrospectiveGrid";
 import {
   Box,
   Center,
@@ -32,4 +34,6 @@ export const mdxComponents = {
   TroubleshootingList,
   FeatureList,
   ArchitectureDiagram,
+  ArchitectureDecisions,
+  RetrospectiveGrid,
 };

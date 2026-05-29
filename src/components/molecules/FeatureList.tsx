@@ -56,7 +56,10 @@ export default function FeatureList({ items, className }: Props) {
             )}
           >
             <div className="flex items-baseline gap-2.5">
-              <span className="text-[11px] font-mono text-muted-foreground tabular-nums">
+              <span
+                className="text-[11px] font-black text-muted-foreground tabular-nums tracking-tight"
+                style={{ textShadow: "0 0 0.4px currentColor" }}
+              >
                 {String(i + 1).padStart(2, "0")}
               </span>
               <h3 className="font-bold text-sm md:text-base tracking-tight m-0">
