@@ -48,9 +48,10 @@ import {
 /**
  * 아이콘 소스:
  *  - react-icons IconType: 정상 SVG 렌더
- *  - null: 이니셜 모노그램 폴백 (react-icons에 없는 신규 라이브러리)
+ *  - { brand: string }: 로컬 SVG (svgl 등) — BrandIcon 레지스트리 키
+ *  - null: 이니셜 모노그램 폴백
  */
-export type FamiliarIcon = IconType | null;
+export type FamiliarIcon = IconType | { brand: string } | null;
 
 export interface FamiliarItem {
   icon: FamiliarIcon;
@@ -82,10 +83,10 @@ export const familiarStack: FamiliarGroup[] = [
       { icon: SiWebpack, name: "Webpack", color: "#8DD6F9" },
       { icon: SiElectron, name: "Electron", color: "#47848F" },
       { icon: SiRedux, name: "Redux", color: "#764ABC" },
-      { icon: null, name: "TanStack Query", monogram: "TQ", color: "#FF4154" },
+      { icon: { brand: "tanstack" }, name: "TanStack Query" },
       { icon: null, name: "Zustand", monogram: "Z", color: "#443E38" },
       { icon: SiRadixui, name: "Radix UI" },
-      { icon: null, name: "shadcn/ui", monogram: "ui", color: "#000000" },
+      { icon: { brand: "shadcn" }, name: "shadcn/ui" },
       { icon: SiFramer, name: "Framer Motion", color: "#0055FF" },
       { icon: SiSass, name: "Sass", color: "#CC6699" },
       { icon: SiStorybook, name: "Storybook", color: "#FF4785" },

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { TechCard } from "@/components/molecules/TechCard";
+import { BrandIcon } from "@/components/atoms/BrandIcon";
 import { techStack } from "@/lib/tech-stack";
 import { familiarStack } from "@/lib/familiar-stack";
 import { cn } from "@/lib/utils";
@@ -88,7 +89,11 @@ export default function TechStackSection() {
               </p>
               <div className="flex flex-wrap gap-1.5 md:gap-2 not-prose">
                 {group.items.map((item) => {
-                  const Icon = item.icon;
+                  const icon = item.icon;
+                  const isBrand =
+                    icon !== null && typeof icon === "object" && "brand" in icon;
+                  const IconFn =
+                    icon !== null && typeof icon === "function" ? icon : null;
                   return (
                     <div
                       key={item.name}
@@ -96,8 +101,13 @@ export default function TechStackSection() {
                       aria-label={item.name}
                       className="size-12 md:size-14 rounded-xl bg-card shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all flex items-center justify-center"
                     >
-                      {Icon ? (
-                        <Icon
+                      {isBrand ? (
+                        <BrandIcon
+                          name={(icon as { brand: string }).brand}
+                          className="size-11 md:size-13"
+                        />
+                      ) : IconFn ? (
+                        <IconFn
                           className="size-11 md:size-13"
                           style={item.color ? { color: item.color } : undefined}
                           aria-hidden="true"
