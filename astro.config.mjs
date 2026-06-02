@@ -7,8 +7,8 @@ import tailwindcss from "@tailwindcss/vite";
 import rehypeSlug from "rehype-slug";
 
 export default defineConfig({
-  site: "https://bmc00-05.github.io",
-  base: "/Archive",
+  site: "https://bomun.dev",
+  base: "/",
   trailingSlash: "ignore",
   output: "static",
   vite: {

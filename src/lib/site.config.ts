@@ -2,7 +2,7 @@ export const siteConfig = {
   name: "Archive",
   title: "Archive — bmc00-05",
   description: "기록과 만든 것들을 모아두는 공간.",
-  url: "https://bmc00-05.github.io/Archive",
+  url: "https://bomun.dev",
   author: {
     name: "bmc00-05",
     email: "cbm87961541@gmail.com",
