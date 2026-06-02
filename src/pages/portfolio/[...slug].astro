@@ -1,0 +1,54 @@
+---
+import { type CollectionEntry, getCollection, render } from "astro:content";
+import PortfolioLayout from "@/layouts/PortfolioLayout.astro";
+import CoverSlide from "@/components/organisms/CoverSlide.astro";
+import DocViewer from "@/components/organisms/DocViewer";
+import PortfolioNavMenu from "@/components/organisms/PortfolioNavMenu";
+import { mdxComponents } from "@/lib/mdx-components";
+import { getPublishedProjects } from "@/lib/content";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects", ({ data }) => !data.draft);
+  return projects.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<"projects">;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { data } = entry;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const articleId = "project-article";
+
+const allProjects = await getPublishedProjects();
+const navItems = allProjects.map((p) => ({
+  id: p.id,
+  title: p.data.title,
+  href: `${base}/portfolio/${p.id}`,
+}));
+---
+
+<PortfolioLayout title={`${data.title} — Portfolio`} description={data.summary} wide>
+  {/* Floating 포트폴리오 네비 — 전체 항목으로 빠른 이동 */}
+  <PortfolioNavMenu
+    client:load
+    rootHref={base + "/portfolio"}
+    items={navItems}
+    currentId={entry.id}
+  />
+
+  <article
+    id={articleId}
+    class="prose prose-neutral dark:prose-invert max-w-none"
+  >
+    <CoverSlide data={data} />
+    <Content components={mdxComponents} />
+  </article>
+
+  <DocViewer client:load articleId={articleId} />
+</PortfolioLayout>

@@ -1,0 +1,35 @@
+---
+import ThemeToggle from "@/components/organisms/ThemeToggle";
+import { siteConfig } from "@/lib/site.config";
+
+const pathname = Astro.url.pathname;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const isActive = (href: string) => {
+  if (href === "/") return pathname === `${base}/` || pathname === base || pathname === "/";
+  return pathname.startsWith(`${base}${href}`);
+};
+---
+
+<header class="border-b sticky top-0 z-40 bg-background/80 backdrop-blur">
+  <div class="mx-auto max-w-5xl px-6 h-14 flex items-center justify-between">
+    <a href={base + "/"} class="font-semibold tracking-tight text-sm">
+      {siteConfig.name}
+    </a>
+    <nav class="flex items-center gap-6 text-sm">
+      {
+        siteConfig.nav.map((item) => (
+          <a
+            href={base + item.href}
+            class:list={[
+              "transition-colors hover:text-foreground",
+              isActive(item.href) ? "text-foreground" : "text-muted-foreground",
+            ]}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <ThemeToggle client:load />
+    </nav>
+  </div>
+</header>
