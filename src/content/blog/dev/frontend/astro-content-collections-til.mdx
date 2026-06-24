@@ -1,0 +1,65 @@
+---
+title: "TIL: Astro 콘텐츠 컬렉션으로 글에 타입을 입히기"
+description: "이 블로그의 글들은 어떻게 관리될까? Astro의 content collection과 Zod 스키마로 frontmatter에 타입 안전성을 부여하는 방법을 정리한 TIL."
+pubDate: 2026-06-22
+tags:
+  - astro
+  - TIL
+  - zod
+  - 콘텐츠
+---
+
+import { Box } from "@/components/mdx/layout";
+
+오늘 배운 것(TIL). 이 블로그의 글은 그냥 마크다운 파일이지만, 아무 형식이나
+허용되는 건 아니다. **Astro의 content collection**이 각 글의 frontmatter를
+Zod 스키마로 검증한다.
+
+## 스키마 정의
+
+`src/content.config.ts` 에 블로그 컬렉션의 형태가 정의돼 있다.
+
+```ts
+const blog = defineCollection({
+  loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/content/blog" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    pubDate: z.coerce.date(),
+    updatedDate: z.coerce.date().optional(),
+    tags: z.array(z.string()).default([]),
+    cover: z.string().optional(),
+    draft: z.boolean().default(false),
+  }),
+});
+```
+
+<Box>
+`z.coerce.date()` 덕분에 frontmatter에 `pubDate: 2026-06-22` 처럼 적어도 자동으로
+`Date` 객체가 된다. `tags` 는 기본값 `[]`, `draft` 는 기본값 `false` — 안 적어도 안전하다.
+</Box>
+
+## 무엇이 좋은가
+
+- **오타 방어**: `titlee:` 처럼 잘못 쓰면 빌드가 실패한다. 잘못된 글이 배포되지 않는다.
+- **자동완성**: `entry.data.tags` 가 `string[]` 임을 에디터가 안다.
+- **`draft` 플래그**: `draft: true` 인 글은 라우트에서 자동으로 빠진다.
+
+```astro
+// src/pages/blog/[...slug].astro
+const posts = await getCollection("blog", ({ data }) => !data.draft);
+```
+
+## 태그는 어떻게 보이나
+
+frontmatter의 `tags` 배열은 글 상단에 Badge로 렌더된다.
+
+```text
+tags:
+  - astro
+  - TIL
+  - zod
+```
+
+이 글에도 위 태그들이 달려 있다. 같은 태그를 가진 글을 묶는 태그 인덱스 페이지는
+다음 작업으로 남겨둔다.

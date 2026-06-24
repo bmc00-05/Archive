@@ -12,12 +12,15 @@ interface Props {
   title?: string;
   description?: string;
   hideChrome?: boolean;
+  /** Header 는 유지하되 하단 Footer 만 숨김 (독립 스크롤 레이아웃용) */
+  hideFooter?: boolean;
 }
 
 const {
   title = siteConfig.title,
   description = siteConfig.description,
   hideChrome = false,
+  hideFooter = false,
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 ---
@@ -52,6 +55,6 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <div class="flex-1">
       <slot />
     </div>
-    {!hideChrome && <Footer />}
+    {!hideChrome && !hideFooter && <Footer />}
   </body>
 </html>

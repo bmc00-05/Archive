@@ -1,0 +1,31 @@
+---
+import BlogLayout from "@/layouts/BlogLayout.astro";
+import PostList from "@/components/organisms/PostList.astro";
+import { getPublishedPosts, getBlogTree } from "@/lib/content";
+
+export async function getStaticPaths() {
+  const { categories } = await getBlogTree();
+  const paths = [];
+  for (const cat of categories) {
+    // 대분류 페이지
+    paths.push({ params: { path: cat.path }, props: { title: cat.label } });
+    // 소분류 페이지
+    for (const sub of cat.subcategories) {
+      paths.push({ params: { path: sub.path }, props: { title: sub.label } });
+    }
+  }
+  return paths;
+}
+
+const { path } = Astro.params;
+const { title } = Astro.props;
+
+// id 가 "<카테고리 경로>/" 로 시작하는 글 = 해당 카테고리(하위 소분류 포함)의 글
+const posts = (await getPublishedPosts()).filter((p) =>
+  p.id.startsWith(`${path}/`)
+);
+---
+
+<BlogLayout title={`${title} — Archive`} description={`${title} 카테고리의 글 목록`}>
+  <PostList title={title} posts={posts} />
+</BlogLayout>

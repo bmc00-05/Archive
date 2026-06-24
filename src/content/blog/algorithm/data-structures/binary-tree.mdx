@@ -1,0 +1,52 @@
+---
+title: "이진 트리 기초와 순회"
+description: "이진 트리의 구조와 전위·중위·후위 순회를 코드와 함께 정리한다. 알고리즘 > 자료구조 카테고리의 첫 글."
+pubDate: 2026-06-23
+tags:
+  - 알고리즘
+  - 자료구조
+  - 트리
+---
+
+import { Box } from "@/components/mdx/layout";
+
+![이진 트리 다이어그램](/favicon.svg)
+
+이 글은 **알고리즘 > 자료구조** 카테고리에 속한다. 폴더 경로
+`blog/algorithm/data-structures/` 가 그대로 대분류·소분류가 된다. 위 이미지처럼
+글에 처음 삽입된 이미지는 목록에서 썸네일로 표시된다.
+
+## 이진 트리란
+
+각 노드가 최대 두 개의 자식(왼쪽/오른쪽)을 갖는 트리 자료구조다.
+
+```ts
+class TreeNode {
+  value: number;
+  left: TreeNode | null = null;
+  right: TreeNode | null = null;
+  constructor(value: number) {
+    this.value = value;
+  }
+}
+```
+
+## 순회 (Traversal)
+
+<Box>
+- **전위(preorder)**: 루트 → 왼쪽 → 오른쪽
+- **중위(inorder)**: 왼쪽 → 루트 → 오른쪽 (이진 탐색 트리에서 정렬된 순서)
+- **후위(postorder)**: 왼쪽 → 오른쪽 → 루트
+</Box>
+
+```ts
+function inorder(node: TreeNode | null, out: number[] = []): number[] {
+  if (!node) return out;
+  inorder(node.left, out);
+  out.push(node.value);
+  inorder(node.right, out);
+  return out;
+}
+```
+
+중위 순회는 이진 탐색 트리에서 값을 **오름차순**으로 방문한다는 점이 핵심이다.

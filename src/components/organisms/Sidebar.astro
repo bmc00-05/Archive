@@ -1,46 +1,86 @@
 ---
-import { getPublishedProjects, getPublishedPosts } from "@/lib/content";
+import { getPublishedProjects, getBlogTree } from "@/lib/content";
 import { siteConfig } from "@/lib/site.config";
 import { Github, Mail } from "lucide-react";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const projects = await getPublishedProjects();
-const recentPosts = (await getPublishedPosts()).slice(0, 5);
+const { recent, categories } = await getBlogTree(5);
+const postHref = (id: string) => `${base}/blog/${id}`;
+const categoryHref = (path: string) => `${base}/blog/category/${path}`;
 ---
 
 <aside class="text-sm">
-  <div class="space-y-1">
+  {/* ── 최신글 ── */}
+  <nav class="space-y-1">
     <a
       href={base + "/"}
-      class="font-semibold tracking-tight text-base block"
+      class="text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors mb-2 inline-block"
     >
-      {siteConfig.name}
+      최신글
     </a>
-    <p class="text-xs text-muted-foreground">기록과 만든 것들.</p>
-  </div>
-
-  <nav class="mt-8 space-y-1">
-    <p class="text-xs uppercase tracking-wider text-muted-foreground mb-2">Blog</p>
-    <a href={base + "/"} class="block py-1 hover:text-foreground text-muted-foreground transition-colors">
-      전체 글
-    </a>
-    {recentPosts.length === 0 && (
+    {recent.length === 0 && (
       <p class="text-xs text-muted-foreground italic py-1">아직 글이 없습니다.</p>
     )}
-    {
-      recentPosts.map((post) => (
-        <a
-          href={`${base}/blog/${post.id}`}
-          class="block py-1 hover:text-foreground text-muted-foreground transition-colors truncate"
-        >
-          {post.data.title}
-        </a>
-      ))
-    }
+    <div class="space-y-0.5">
+      {
+        recent.map((post) => (
+          <a
+            href={postHref(post.id)}
+            class="block py-0.5 pl-3 border-l border-border hover:border-foreground hover:text-foreground text-muted-foreground transition-colors truncate"
+          >
+            {post.title}
+          </a>
+        ))
+      }
+    </div>
   </nav>
 
-  <div class="my-6 h-px bg-border"></div>
+  {/* ── 카테고리 트리 (대분류 > 소분류) ── */}
+  {
+    categories.length > 0 && (
+      <>
+        <div class="my-6 h-px bg-border" />
+        <nav class="space-y-3">
+          {categories.map((cat) => {
+            const catCount =
+              cat.directPosts.length +
+              cat.subcategories.reduce((n, s) => n + s.posts.length, 0);
+            return (
+              <div>
+                {/* 상위 카테고리 (글 갯수) — 드롭다운 없이 항상 하위를 표시 */}
+                <a
+                  href={categoryHref(cat.path)}
+                  class="inline-flex items-center gap-1 text-xs uppercase tracking-wider text-foreground font-medium hover:underline underline-offset-4"
+                >
+                  {cat.label}
+                  <span class="text-[11px] text-muted-foreground font-normal">({catCount})</span>
+                </a>
 
+                {/* 소분류 (글 갯수) — 글 목록 없이 카테고리만 표시 */}
+                {cat.subcategories.length > 0 && (
+                  <div class="mt-1 space-y-0.5">
+                    {cat.subcategories.map((sub) => (
+                      <a
+                        href={categoryHref(sub.path)}
+                        class="flex items-center gap-1 py-0.5 pl-3 border-l border-border text-muted-foreground hover:border-foreground hover:text-foreground transition-colors"
+                      >
+                        <span class="truncate text-[13px]">{sub.label}</span>
+                        <span class="text-[11px] shrink-0">({sub.posts.length})</span>
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </nav>
+      </>
+    )
+  }
+
+  {/* ── Portfolio ── */}
+  <div class="my-6 h-px bg-border"></div>
   <div>
     <a
       href={base + "/portfolio"}
@@ -62,8 +102,8 @@ const recentPosts = (await getPublishedPosts()).slice(0, 5);
     </div>
   </div>
 
+  {/* ── About / 연락처 ── */}
   <div class="my-6 h-px bg-border"></div>
-
   <div class="space-y-2">
     <a
       href={base + "/about"}

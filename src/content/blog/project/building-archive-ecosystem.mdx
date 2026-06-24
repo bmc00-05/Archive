@@ -1,0 +1,81 @@
+---
+title: "기록을 위한 아카이브 생태계를 설계하다"
+description: "노션의 편한 작성 경험과 정적 사이트의 영속성을 한데 묶고 싶었다. 데스크탑 에디터에서 글을 쓰면 git을 거쳐 자동 배포되는 개인 아카이브 생태계의 첫 설계 노트."
+pubDate: 2026-06-20
+updatedDate: 2026-06-24
+tags:
+  - 아카이브
+  - 아키텍처
+  - astro
+  - 자동화
+---
+
+import { Cols, Box, Stat, Row } from "@/components/mdx/layout";
+import FeatureList from "@/components/molecules/FeatureList";
+
+> 목표는 단순하다. **쓰면 곧 기록이 되고, 기록이 곧 사이트가 되는** 마찰 없는 흐름.
+
+노션은 작성이 편하지만 내 소유가 아니고, 정적 블로그는 소유권은 좋지만 작성이 번거롭다.
+이 둘의 장점만 모으는 게 이 프로젝트의 출발점이다.
+
+<Row gap="md">
+  <Stat label="원본" value="Markdown" subtext="단일 진실 원천" />
+  <Stat label="배포" value="자동" subtext="push → Actions" />
+  <Stat label="도메인" value="bomun.dev" subtext="GitHub Pages" />
+</Row>
+
+## 세 개의 레이어
+
+연동이라는 게 마법처럼 보이지만, 뜯어보면 평범한 세 레이어로 나뉜다.
+
+<Cols n={3}>
+  <Box>
+    **① 파일**
+
+    데스크탑 앱이 로컬에 clone된 레포의 `.mdx` 파일을 읽고 쓴다. GitHub API가 아니라 그냥 파일시스템.
+  </Box>
+  <Box>
+    **② git**
+
+    저장 버튼을 누르면 `add → commit → push`. 이미 설정된 자격증명을 그대로 쓴다.
+  </Box>
+  <Box>
+    **③ Actions**
+
+    push 이벤트가 빌드·배포를 트리거한다. 앱은 push까지만 하면 끝.
+  </Box>
+</Cols>
+
+## 역할 분리 — 코드가 할 일, AI가 할 일
+
+설계에서 가장 중요한 결정은 **무엇을 자동화 코드에 맡기고 무엇을 AI에 맡길지**였다.
+
+<FeatureList
+  items={[
+    {
+      title: "배포 파이프라인은 결정론적 코드로",
+      description:
+        "저장 → 커밋 → push → 빌드는 매번 똑같이 동작해야 한다. 여기에 LLM을 넣으면 느리고 비결정적이다. simple-git + GitHub Actions로 충분하다.",
+      tags: ["simple-git", "GitHub Actions"],
+    },
+    {
+      title: "콘텐츠 지능화는 AI 보조로",
+      description:
+        "요약·태그 추천·문법 교정·초안 변환처럼 매번 달라도 되는 일은 LLM이 빛난다. 명시적 버튼으로 호출해 비용과 지연을 통제한다.",
+      tags: ["요약", "태그", "교정"],
+    },
+  ]}
+/>
+
+## 다음 단계
+
+<Box>
+지금은 **작성 프론트엔드**부터 다듬는 중이다. mdx 스키마와 컴포넌트가 자리잡으면,
+그 위에 데스크탑 에디터를 얹는다. 도구(에디터)와 콘텐츠(이 블로그)는 생명주기가 다르니
+**별도 레포**로 간다.
+</Box>
+
+- [x] 콘텐츠 스키마 / 태그 기능 정리
+- [ ] 작성용 mdx 컴포넌트 세트 확장
+- [ ] 데스크탑 에디터 골격 (Tauri vs Electron)
+- [ ] 저장 → 자동 커밋 연동

@@ -2,7 +2,6 @@
 import { type CollectionEntry, getCollection, render } from "astro:content";
 import BlogLayout from "@/layouts/BlogLayout.astro";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft } from "lucide-react";
 import { mdxComponents } from "@/lib/mdx-components";
 
 export async function getStaticPaths() {
@@ -20,30 +19,34 @@ interface Props {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 const { data } = entry;
-const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 ---
 
 <BlogLayout title={`${data.title} — Archive`} description={data.description}>
-  <a
-    href={base + "/"}
-    class="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
-  >
-    <ArrowLeft className="size-4" /> Blog
-  </a>
+  {/* 글 헤더: 제목 → 작성날짜·태그 → 요약 → 구분선 */}
+  <header class="mb-10 border-b pb-8">
+    <h1 class="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
+      {data.title}
+    </h1>
 
-  <header class="mb-8">
-    <h1 class="text-3xl font-bold tracking-tight">{data.title}</h1>
-    <p class="mt-2 text-muted-foreground">{data.description}</p>
-    <div class="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
+    <div class="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
       <time>{data.pubDate.toISOString().slice(0, 10)}</time>
       {data.tags.length > 0 && (
-        <div class="flex flex-wrap gap-1.5">
-          {data.tags.map((t) => (
-            <Badge variant="outline" className="font-normal text-xs">{t}</Badge>
-          ))}
-        </div>
+        <>
+          <span aria-hidden class="text-border">·</span>
+          <div class="flex flex-wrap gap-1.5">
+            {data.tags.map((t) => (
+              <Badge variant="outline" className="font-normal text-xs">{t}</Badge>
+            ))}
+          </div>
+        </>
       )}
     </div>
+
+    {data.description && (
+      <p class="mt-5 text-lg leading-relaxed text-muted-foreground">
+        {data.description}
+      </p>
+    )}
   </header>
 
   <article class="prose prose-neutral dark:prose-invert max-w-none">

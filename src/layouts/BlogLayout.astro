@@ -22,9 +22,10 @@ const recentPosts = (await getPublishedPosts()).slice(0, 5).map((p) => ({
 }));
 ---
 
-<BaseLayout title={title} description={description} hideChrome>
-  <div class="md:hidden border-b sticky top-0 z-40 bg-background/80 backdrop-blur">
-    <div class="flex items-center justify-between px-4 h-12">
+<BaseLayout title={title} description={description}>
+  {/* 모바일: 상단 Header 아래에 사이드바(최근 글/프로젝트)를 여는 보조 바 */}
+  <div class="md:hidden border-b sticky top-14 z-30 bg-background/80 backdrop-blur">
+    <div class="flex items-center gap-2 px-4 h-11">
       <MobileSidebar
         client:load
         base={base}
@@ -33,16 +34,17 @@ const recentPosts = (await getPublishedPosts()).slice(0, 5).map((p) => ({
         projects={projects}
         author={{ github: siteConfig.author.github, email: siteConfig.author.email }}
       />
-      <a href={base + "/"} class="font-semibold text-sm tracking-tight">{siteConfig.name}</a>
-      <div class="w-9"></div>
+      <span class="text-sm text-muted-foreground">글 목록</span>
     </div>
   </div>
 
   <div class="mx-auto max-w-6xl px-6 md:px-8 py-8 md:py-12 grid md:grid-cols-[240px_1fr] gap-8 md:gap-12">
+    {/*
+      사이드바를 고정하지 않고 본문과 함께 페이지 전체가 스크롤되게 한다 (티스토리 방식).
+      사이드바가 본문보다 길면 본문 쪽은 그냥 빈 공간으로 남는다.
+    */}
     <div class="hidden md:block">
-      <div class="sticky top-8">
-        <Sidebar />
-      </div>
+      <Sidebar />
     </div>
     <main class="min-w-0">
       <slot />
